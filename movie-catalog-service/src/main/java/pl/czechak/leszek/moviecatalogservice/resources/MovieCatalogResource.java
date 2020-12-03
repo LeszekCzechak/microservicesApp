@@ -8,9 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.czechak.leszek.moviecatalogservice.models.CatalogItem;
 import pl.czechak.leszek.moviecatalogservice.models.Movie;
-import pl.czechak.leszek.moviecatalogservice.models.Rating;
+import pl.czechak.leszek.moviecatalogservice.models.UserRating;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,22 +28,11 @@ public class MovieCatalogResource {
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable String userId) {
 
-        List<Rating> ratings = Arrays.asList(
-                new Rating("1234", 4),
-                new Rating("567", 3),
-                new Rating("890", 6)
-        );
+        UserRating ratings = restTemplate.getForObject("http://localhost:8083/ratingsdata/users/" + userId, UserRating.class);
 
-        return ratings.stream().map(rating -> {
+        return ratings.getRatings().stream().map(rating -> {
 
             Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
-
-//            Movie movie = webClientBuilder.build()
-//                    .get()
-//                    .uri("http://localhost:8082/movies/" + rating.getMovieId())
-//                    .retrieve()
-//                    .bodyToMono(Movie.class)
-//                    .block();
 
             return new CatalogItem(movie.getName(), movie.getDescription(), rating.getRating());
         })
@@ -53,3 +41,10 @@ public class MovieCatalogResource {
 
     }
 }
+
+//            Movie movie = webClientBuilder.build()
+//                    .get()
+//                    .uri("http://localhost:8082/movies/" + rating.getMovieId())
+//                    .retrieve()
+//                    .bodyToMono(Movie.class)
+//                    .block();
