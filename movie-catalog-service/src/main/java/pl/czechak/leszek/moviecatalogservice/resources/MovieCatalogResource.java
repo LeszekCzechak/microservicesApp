@@ -1,12 +1,10 @@
 package pl.czechak.leszek.moviecatalogservice.resources;
 
-import com.netflix.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 import pl.czechak.leszek.moviecatalogservice.models.CatalogItem;
 import pl.czechak.leszek.moviecatalogservice.models.Movie;
 import pl.czechak.leszek.moviecatalogservice.models.UserRating;
@@ -19,13 +17,9 @@ import java.util.stream.Collectors;
 public class MovieCatalogResource {
 
     private final RestTemplate restTemplate;
-    private final DiscoveryClient discoveryClient;
-    private final WebClient.Builder webClientBuilder;
 
-    public MovieCatalogResource(RestTemplate restTemplate, DiscoveryClient discoveryClient, WebClient.Builder webClientBuilder) {
+    public MovieCatalogResource(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.discoveryClient = discoveryClient;
-        this.webClientBuilder = webClientBuilder;
     }
 
     @GetMapping("/{userId}")
